@@ -57,11 +57,16 @@ name = "apman-cli"
 version = "0.1.0"
 dependencies = [
  "apman-core",
+ "apman-device",
  "clap",
 ]
 
 [[package]]
 name = "apman-core"
+version = "0.1.0"
+
+[[package]]
+name = "apman-device"
 version = "0.1.0"
 
 [[package]]

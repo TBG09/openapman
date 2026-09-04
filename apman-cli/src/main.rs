@@ -1,5 +1,8 @@
 use clap::{Parser, Subcommand};
 use apman_core::application;
+use apman_device::distro;
+use apman_device::distro::OsType;
+use apman_device::model::get_model_type;
 
 #[derive(Parser)]
 struct Cli {
@@ -9,6 +12,16 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
 	Version,
+	Device {
+        #[command(subcommand)]
+        action: DeviceAction,
+    },
+}
+
+#[derive(Subcommand)]
+enum DeviceAction {
+    Info,
+    List,
 }
 
 fn main() {
@@ -18,6 +31,25 @@ fn main() {
 		Commands::Version => {
 			println!("apman version {}", application::VERSION);
 			println!("commit {}", application::GIT_HASH);
-		}
+		},
+		Commands::Device { action } => match action {
+            DeviceAction::Info => {
+				let osinf = distro::get_os_info();
+				let modelinf = get_model_type();
+				match osinf {
+					OsType::Linux { distro, release, .. } => {
+						println!("Distro: {}", release.pretty_name);
+						println!("Base Distro: {}", release.name);
+						println!("Board Model: {}", modelinf.as_str());
+						
+					}
+					_ => {}
+				}
+            }
+            DeviceAction::List => {
+                println!("listing devices...");
+            }
+        },
 	}
+	
 }

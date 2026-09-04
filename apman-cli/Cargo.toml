@@ -9,4 +9,5 @@ path = "src/main.rs"
 
 [dependencies]
 apman-core = { path = "../crates/apman-core" }
+apman-device = { path = "../crates/apman-device" }
 clap = { version = "4", features = ["derive"] }

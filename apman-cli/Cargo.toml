@@ -1,0 +1,12 @@
+[package]
+name = "apman-cli"
+version.workspace = true
+edition = "2021"
+
+[[bin]]
+name = "apman"
+path = "src/main.rs"
+
+[dependencies]
+apman-core = { path = "../crates/apman-core" }
+clap = { version = "4", features = ["derive"] }

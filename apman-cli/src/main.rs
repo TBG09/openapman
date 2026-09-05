@@ -3,7 +3,7 @@ use apman_core::application;
 use apman_device::distro;
 use apman_device::distro::OsType;
 use apman_device::model::get_model_type;
-
+use apman_device::network::{get_network_devices, remove_unimportant_devices};
 #[derive(Parser)]
 struct Cli {
 	#[command(subcommand)]
@@ -41,7 +41,10 @@ fn main() {
 						println!("Distro: {}", release.pretty_name);
 						println!("Base Distro: {}", release.name);
 						println!("Board Model: {}", modelinf.as_str());
-						
+						println!("Detected network devices:");
+						for item in remove_unimportant_devices(get_network_devices()) {
+							println!("    {}", item);
+						}
 					}
 					_ => {}
 				}

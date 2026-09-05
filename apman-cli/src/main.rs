@@ -43,8 +43,9 @@ fn main() {
 						println!("Board Model: {}", modelinf.as_str());
 						println!("Detected network devices:");
 						for item in remove_unimportant_devices(get_network_devices()) {
-							println!("    {}", item);
+							println!("    {} - State: {}, Addr: {}", item.name, item.state, item.address);
 						}
+
 					}
 					_ => {}
 				}

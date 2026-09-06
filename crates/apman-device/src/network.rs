@@ -1,10 +1,9 @@
+use crate::distro::{OsType, get_os_info};
 use std::cmp::PartialEq;
-use std::fs::{read_dir, read_to_string, canonicalize};
+use std::fs::{canonicalize, read_dir, read_to_string};
 use std::path::PathBuf;
-use crate::distro::{get_os_info, OsType};
 
-
-pub enum NetworkDevice  {
+pub enum NetworkDevice {
     Wireless,
     Ethernet,
     Virtual,
@@ -15,7 +14,7 @@ pub enum VirtualDeviceType {
     Docker,
     Loopback,
     Unknown,
-    None
+    None,
 }
 pub struct NetworkDeviceDescriptor {
     pub name: String,
@@ -28,7 +27,6 @@ pub struct NetworkDeviceDescriptor {
     pub speed: i16,
     pub device_path: String, // path to the actual device interface
     pub flags: String,
-
 }
 
 pub fn get_network_devices() -> Vec<NetworkDeviceDescriptor> {
@@ -46,11 +44,18 @@ pub fn get_network_devices() -> Vec<NetworkDeviceDescriptor> {
 
             let mut statef = devicepathbuf.clone();
             statef.push("operstate");
-            let state = read_to_string(statef).unwrap_or("unknown".to_string()).trim().to_string();
-            let addr = read_to_string(devicepathbuf.join("address")).unwrap_or("00:00:00:00:00:00".to_string()).trim().to_string();
+            let state = read_to_string(statef)
+                .unwrap_or("unknown".to_string())
+                .trim()
+                .to_string();
+            let addr = read_to_string(devicepathbuf.join("address"))
+                .unwrap_or("00:00:00:00:00:00".to_string())
+                .trim()
+                .to_string();
             let speed_str = read_to_string(devicepathbuf.join("speed")).unwrap_or("-1".to_string());
             let speed: i16 = speed_str.trim().parse().unwrap_or(-1);
-            let flags_str = read_to_string(devicepathbuf.join("flags")).unwrap_or("0x0".to_string());
+            let flags_str =
+                read_to_string(devicepathbuf.join("flags")).unwrap_or("0x0".to_string());
             let flags = flags_str.trim().to_string();
 
             let carrier = read_to_string(devicepathbuf.join("carrier")).unwrap_or_default();
@@ -101,19 +106,19 @@ pub fn get_network_devices() -> Vec<NetworkDeviceDescriptor> {
             });
         }
     } else {
-        return devices
+        return devices;
     }
 
     return devices;
 }
 
 // amazing naming, I know right?
-pub fn remove_unimportant_devices(mut devices: Vec<NetworkDeviceDescriptor>) -> Vec<NetworkDeviceDescriptor> {
+pub fn remove_unimportant_devices(
+    mut devices: Vec<NetworkDeviceDescriptor>,
+) -> Vec<NetworkDeviceDescriptor> {
     devices.retain(|device| match device.virtual_device_type {
         VirtualDeviceType::Docker | VirtualDeviceType::Loopback => false,
-        VirtualDeviceType::Unknown => true,
-        VirtualDeviceType::None => false,
+        VirtualDeviceType::Unknown | VirtualDeviceType::None => true,
     });
     devices
 }
-
